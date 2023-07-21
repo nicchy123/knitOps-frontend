@@ -16,7 +16,7 @@ const App = () => {
       path: '/check/:id',
       element: <PrivateRoute><Actions/></PrivateRoute>,
       loader: async ({ params }) => {
-        return fetch(`http://localhost:2000/tools/${params.id}`);
+        return fetch(`https://knitops-backend.vercel.app/tools/${params.id}`);
       }
     },
     {

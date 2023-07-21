@@ -6,7 +6,7 @@ const Check = () => {
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetch("http://localhost:2000/tools")
+    fetch("https://knitops-backend.vercel.app/tools")
       .then((res) => res.json())
       .then((data) => {
         setLoading(false);

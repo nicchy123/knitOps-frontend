@@ -30,7 +30,7 @@ const Signup = () => {
       .catch((error) => setError(error.message));
   };
   return (
-    <div className="hero w-full my-20">
+    <div className="hero w-full min-h-[100vh]">
       <div className="hero-content ">
         <form
           onSubmit={handleSignup}
