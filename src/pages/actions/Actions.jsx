@@ -2,14 +2,16 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 import { AuthContext } from "../../contents/AuthProvider";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Actions = () => {
   const [desiredVersion, setDesiredVersion] = useState("");
-  const [upgradeStatus, setUpgradeStatus] = useState("");
   const { user } = useContext(AuthContext);
+  console.log(user.uid)
   const [userData, setUserData] = useState([]);
   const data = useLoaderData();
   const [loading, setLoading] = useState(true);
+  const [refresher, setRefresher] = useState(false)
   useEffect(() => {
     fetch(`https://knitops-backend.vercel.app/user/${user.uid}`)
       .then((res) => res.json())
@@ -17,7 +19,7 @@ const Actions = () => {
         setUserData(data);
         setLoading(false);
       });
-  }, []);
+  }, [refresher]);
   if (loading)
     return (
       <div className="min-h-[100vh] flex justify-center items-center">
@@ -28,16 +30,19 @@ const Actions = () => {
 
   const handleUpgrade = async () => {
     try {
+      if(!desiredVersion)return toast.error("please select a version")
       const isUpgrade = confirm("Proceed to upgrade?");
       if (isUpgrade) {
         const response = await axios
-          .put(`http://localhost:5000/upgrade/${user?.uid}`, {
+          .put(`https://knitops-backend.vercel.app/upgrade/${user?.uid}`, {
             tool: data?.name,
             desiredVersion,
           })
-          .then((data) => console.log(data));
-
-        setUpgradeStatus(response.data.message);
+          .then((data) => {
+            setRefresher(!refresher)
+            console.log(data)
+            toast.success("Version Updated Successfully")
+          });
       }
     } catch (error) {
       console.error("Error upgrading tool:", error);
@@ -73,9 +78,9 @@ const Actions = () => {
           <div className="text-center">
             <button onClick={handleUpgrade}>Upgrade Tool</button>
           </div>
-          {upgradeStatus && <p>{upgradeStatus}</p>}
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 };
