@@ -23,6 +23,7 @@ const Check = () => {
   return (
     <div className="flex lg:flex-row flex-col justify-center items-center gap-5 min-h-[100vh]">
       {tools.map((tool, i) => (
+        
         <div
           key={i}
           className="bg-black w-80 h-44 flex flex-col justify-center items-center rounded-md"

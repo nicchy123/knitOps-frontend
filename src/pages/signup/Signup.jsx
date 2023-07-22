@@ -3,29 +3,54 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../contents/AuthProvider";
 
-
 const Signup = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const { createUser, googleSignin } = useContext(AuthContext);
-  const handleGoogleSignin = () => {
-    googleSignin()
-      .then((res) => {
-        console.log(res.user);
-        navigate("/");
-      })
-      .catch((error) => console.log(error));
-  };
+
   const handleSignup = (event) => {
     event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
     createUser(email, password)
-      .then((user) => {
-        console.log(user.user);
+      .then((res) => {
+        console.log(res.user);
+        const user = res.user;
         event.target.reset();
-        navigate("/");
+        const userData = {
+          id: user.uid,
+          tech: [
+            {
+              name: "Docker",
+              version: "1.5.6",
+            },
+            {
+              name: "Python",
+              version: "1.6.6",
+            },
+            {
+              name: "Terraform",
+              version: "2.5.6",
+            },
+            {
+              name: "Vault",
+              version: "6.5.6",
+            },
+          ],
+        };
+        fetch("https://knitops-backend.vercel.app/users", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            navigate("/");
+          });
       })
       .catch((error) => setError(error.message));
   };
@@ -82,9 +107,7 @@ const Signup = () => {
                 value="Signup"
               />
             </div>
-            <div>
-              
-            </div>
+            <div></div>
             <p className="text-center">
               Already Have an Account?{" "}
               <Link className="text-blue-600 font-bold" to="/signin">
